@@ -1,0 +1,25 @@
+{
+    "name": "michalholubec/factories",
+    "type": "library",
+    "autoload": {
+        "psr-4": {
+            "Michalholubec\\Factories\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Michal Holubec",
+            "email": "michal@holubec.pro"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "php": ">= 7.4",
+        "doctrine/orm": "^2.7",
+        "fzaninotto/faker": "^1.9",
+        "illuminate/support": "^6.0"
+    },
+    "config": {
+        "sort-packages": true
+    }
+}
