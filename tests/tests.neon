@@ -1,0 +1,16 @@
+application:
+	scanDirs: false
+
+extensions:
+	nettrine.dbal: Nettrine\DBAL\DI\DbalExtension
+	nettrine.orm: Nettrine\ORM\DI\OrmExtension
+	nettrine.orm.cache: Nettrine\ORM\DI\OrmCacheExtension
+	nettrine.orm.annotations: Nettrine\ORM\DI\OrmAnnotationsExtension
+
+nettrine.dbal:
+	connection:
+		driver: pdo_sqlite
+		host: 127.0.0.1
+		user: root
+		password: root
+		dbname: database.sqlite

@@ -6,6 +6,11 @@
             "Michalholubec\\Factories\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Michalholubec\\Tests\\": "tests/"
+        }
+    },
     "authors": [
         {
             "name": "Michal Holubec",
@@ -21,5 +26,16 @@
     },
     "config": {
         "sort-packages": true
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/holubecmichal/tester"
+        }
+    ],
+    "require-dev": {
+        "michalholubec/tester": "dev-main",
+        "nette/bootstrap": "^2.4",
+        "nettrine/orm": "0.3.1"
     }
 }
