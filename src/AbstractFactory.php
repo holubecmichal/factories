@@ -1,6 +1,6 @@
 <?php
 
-namespace Michalholubec\Factory;
+namespace Michalholubec\Factories;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection as DoctrineCollection;
@@ -15,7 +15,7 @@ use ReflectionClass;
 /**
  * @template T of object
  */
-abstract class Factory
+abstract class AbstractFactory
 {
 	static private ManagerRegistry $managerRegistry;
 	static private Faker $faker;
@@ -48,7 +48,7 @@ abstract class Factory
 	/**
 	 * @return static
 	 */
-	public static function new(): Factory
+	public static function new(): AbstractFactory
 	{
 		return new static();
 	}
@@ -104,7 +104,7 @@ abstract class Factory
 	/**
 	 * @return static
 	 */
-	public function has($factory, string $relationship = null): Factory
+	public function has($factory, string $relationship = null): AbstractFactory
 	{
 		$this->has->push([$factory, $relationship]);
 
@@ -125,7 +125,7 @@ abstract class Factory
 		return $this;
 	}
 
-	public function count(int $count): Factory
+	public function count(int $count): AbstractFactory
 	{
 		$this->amount = $count;
 
@@ -193,7 +193,7 @@ abstract class Factory
 		$definition = $this->definition();
 
 		$set = $this->set->map(function ($value) {
-			if ($value instanceof Factory) {
+			if ($value instanceof AbstractFactory) {
 				return $value->makeOne();
 			}
 
@@ -311,7 +311,7 @@ abstract class Factory
 	 */
 	protected function processFactory($factory): Collection
 	{
-		if ($factory instanceof Factory) {
+		if ($factory instanceof AbstractFactory) {
 			$model = $factory->make();
 		} else if ($factory instanceof Collection) {
 			$model = $factory;
@@ -401,7 +401,7 @@ abstract class Factory
 	/**
 	 * @return static
 	 */
-	protected function set(string $key, $value): Factory
+	protected function set(string $key, $value): AbstractFactory
 	{
 		$this->set[$key] = $value;
 
