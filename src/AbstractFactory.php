@@ -7,7 +7,7 @@ use Doctrine\Common\Collections\Collection as DoctrineCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\Common\Persistence\ManagerRegistry;
-use Doctrine\Persistence\ObjectManager;
+use Doctrine\Common\Persistence\ObjectManager;
 use Faker\Generator as Faker;
 use Illuminate\Support\Collection;
 use ReflectionClass;
