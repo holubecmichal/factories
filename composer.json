@@ -19,10 +19,10 @@
     ],
     "minimum-stability": "stable",
     "require": {
-        "php": ">= 7.4",
+        "php": "~7.1",
         "doctrine/orm": "^2.7",
         "fzaninotto/faker": "^1.9",
-        "illuminate/support": "^6.0"
+        "illuminate/support": "^5.0"
     },
     "config": {
         "sort-packages": true

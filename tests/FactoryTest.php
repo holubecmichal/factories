@@ -23,7 +23,10 @@ $container = require __DIR__ . '/bootstrap.php';
  */
 class FactoryTest extends TestCase
 {
-	private EntityManagerInterface $entityManager;
+	/**
+	 * @var EntityManagerInterface
+	 */
+	private $entityManager;
 
 	protected function setUp()
 	{
@@ -38,7 +41,7 @@ class FactoryTest extends TestCase
 	{
 		$newUser = UserFactory::new()->makeOne();
 
-		Assert::noError(fn () => $this->entityManager->flush());
+		Assert::noError(function () { $this->entityManager->flush(); });
 
 		$users = $this->entityManager->createQueryBuilder()->select('user')->from(User::class, 'user')->getQuery()->execute();
 
@@ -56,7 +59,7 @@ class FactoryTest extends TestCase
 	{
 		$newUser = UserFactory::new()->count(5)->make();
 
-		Assert::noError(fn () => $this->entityManager->flush());
+		Assert::noError(function () { $this->entityManager->flush(); });
 
 		$users = $this->entityManager->createQueryBuilder()->select('user')->from(User::class, 'user')->getQuery()->execute();
 
@@ -70,7 +73,7 @@ class FactoryTest extends TestCase
 
 		Assert::equal($user, $user->getContact()->getUser());
 
-		Assert::noError(fn () => $this->entityManager->flush());
+		Assert::noError(function () { $this->entityManager->flush(); });
 
 		$users = $this->entityManager->createQueryBuilder()->select('user')->from(User::class, 'user')->getQuery()->execute();
 
@@ -95,7 +98,7 @@ class FactoryTest extends TestCase
 
 		Assert::equal($user, $user->getContact()->getUser());
 
-		Assert::noError(fn () => $this->entityManager->flush());
+		Assert::noError(function () { $this->entityManager->flush(); });
 
 		$users = $this->entityManager->createQueryBuilder()->select('user')->from(User::class, 'user')->getQuery()->execute();
 
@@ -116,7 +119,7 @@ class FactoryTest extends TestCase
 	{
 		ContactFactory::new()->makeOne();
 
-		Assert::noError(fn () => $this->entityManager->flush());
+		Assert::noError(function () { $this->entityManager->flush(); });
 
 		$dbContact = $this->entityManager->createQueryBuilder()->select('contact')->from(Contact::class, 'contact')->getQuery()->getOneOrNullResult();
 
@@ -126,7 +129,7 @@ class FactoryTest extends TestCase
 
 		Assert::equal($user, $user->getContact()->getUser());
 
-		Assert::noError(fn () => $this->entityManager->flush());
+		Assert::noError(function () { $this->entityManager->flush(); });
 
 		$users = $this->entityManager->createQueryBuilder()->select('user')->from(User::class, 'user')->getQuery()->execute();
 
@@ -149,7 +152,7 @@ class FactoryTest extends TestCase
 
 		Assert::equal($contact, $contact->getUser()->getContact());
 
-		Assert::noError(fn () => $this->entityManager->flush());
+		Assert::noError(function () { $this->entityManager->flush(); });
 
 		$contacts = $this->entityManager->createQueryBuilder()->select('contact')->from(Contact::class, 'contact')->getQuery()->execute();
 
@@ -171,7 +174,7 @@ class FactoryTest extends TestCase
 
 		Assert::equal($user, $contact->getUser());
 
-		Assert::noError(fn () => $this->entityManager->flush());
+		Assert::noError(function () { $this->entityManager->flush(); });
 
 		$contacts = $this->entityManager->createQueryBuilder()->select('contact')->from(Contact::class, 'contact')->getQuery()->execute();
 
@@ -189,7 +192,7 @@ class FactoryTest extends TestCase
 	{
 		UserFactory::new()->makeOne();
 
-		Assert::noError(fn () => $this->entityManager->flush());
+		Assert::noError(function () { $this->entityManager->flush(); });
 
 		$dbUser = $this->entityManager->createQueryBuilder()->select('user')->from(User::class, 'user')->getQuery()->getOneOrNullResult();
 
@@ -197,7 +200,7 @@ class FactoryTest extends TestCase
 
 		Assert::equal($dbUser, $contact->getUser());
 
-		Assert::noError(fn () => $this->entityManager->flush());
+		Assert::noError(function () { $this->entityManager->flush(); });
 
 		$contacts = $this->entityManager->createQueryBuilder()->select('contact')->from(Contact::class, 'contact')->getQuery()->execute();
 
@@ -221,7 +224,7 @@ class FactoryTest extends TestCase
 			Assert::equal($address->getUser(), $user);
 		}
 
-		Assert::noError(fn () => $this->entityManager->flush());
+		Assert::noError(function () { $this->entityManager->flush(); });
 
 		Assert::count(5, $this->entityManager->createQueryBuilder()->select('address')->from(Address::class, 'address')->getQuery()->execute());
 	}
@@ -238,7 +241,7 @@ class FactoryTest extends TestCase
 			Assert::equal($address->getUser(), $user);
 		}
 
-		Assert::noError(fn () => $this->entityManager->flush());
+		Assert::noError(function () { $this->entityManager->flush(); });
 
 		Assert::count(5, $this->entityManager->createQueryBuilder()->select('address')->from(Address::class, 'address')->getQuery()->execute());
 	}
@@ -253,7 +256,7 @@ class FactoryTest extends TestCase
 			Assert::equal($address->getUser(), $user);
 		}
 
-		Assert::noError(fn () => $this->entityManager->flush());
+		Assert::noError(function () { $this->entityManager->flush(); });
 
 		Assert::count(5, $this->entityManager->createQueryBuilder()->select('address')->from(Address::class, 'address')->getQuery()->execute());
 	}
@@ -267,7 +270,7 @@ class FactoryTest extends TestCase
 
 		Assert::count(5, $addresses);
 
-		Assert::noError(fn () => $this->entityManager->flush());
+		Assert::noError(function () { $this->entityManager->flush(); });
 
 		Assert::count(5, $this->entityManager->createQueryBuilder()->select('address')->from(Address::class, 'address')->getQuery()->execute());
 	}
@@ -289,7 +292,7 @@ class FactoryTest extends TestCase
 			Assert::equal($address->getUser(), $user);
 		}
 
-		Assert::noError(fn () => $this->entityManager->flush());
+		Assert::noError(function () { $this->entityManager->flush(); });
 
 		Assert::count(5, $this->entityManager->createQueryBuilder()->select('address')->from(Address::class, 'address')->getQuery()->execute());
 	}
@@ -298,7 +301,7 @@ class FactoryTest extends TestCase
 	{
 		$user = UserFactory::new()->makeOne();
 
-		Assert::noError(fn () => $this->entityManager->flush());
+		Assert::noError(function () { $this->entityManager->flush(); });
 
 		$dbUser = $this->entityManager->createQueryBuilder()->select('user')->from(User::class, 'user')->getQuery()->getOneOrNullResult();
 
@@ -315,7 +318,7 @@ class FactoryTest extends TestCase
 			Assert::equal($address->getUser(), $user);
 		}
 
-		Assert::noError(fn () => $this->entityManager->flush());
+		Assert::noError(function () { $this->entityManager->flush(); });
 
 		Assert::count(5, $this->entityManager->createQueryBuilder()->select('address')->from(Address::class, 'address')->getQuery()->execute());
 	}
@@ -329,7 +332,7 @@ class FactoryTest extends TestCase
 
 		Assert::count(5, $addresses);
 
-		Assert::noError(fn () => $this->entityManager->flush());
+		Assert::noError(function () { $this->entityManager->flush(); });
 
 		Assert::count(5, $this->entityManager->createQueryBuilder()->select('address')->from(Address::class, 'address')->getQuery()->execute());
 	}
@@ -341,7 +344,7 @@ class FactoryTest extends TestCase
 			->lastName('factory')
 			->makeOne();
 
-		Assert::noError(fn () => $this->entityManager->flush());
+		Assert::noError(function () { $this->entityManager->flush(); });
 
 		Assert::equal('tester', $user->getFirstName());
 		Assert::equal('factory', $user->getLastName());
@@ -356,7 +359,7 @@ class FactoryTest extends TestCase
 	{
 		UserFactory::new()->withContact()->makeOne();
 
-		Assert::noError(fn () => $this->entityManager->flush());
+		Assert::noError(function () { $this->entityManager->flush(); });
 
 		$dbUser = $this->entityManager->createQueryBuilder()->select('user')->from(User::class, 'user')->getQuery()->getOneOrNullResult();
 

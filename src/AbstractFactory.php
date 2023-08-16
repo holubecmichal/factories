@@ -17,14 +17,40 @@ use ReflectionClass;
  */
 abstract class AbstractFactory
 {
-	static private ManagerRegistry $managerRegistry;
-	static private Faker $faker;
+	/**
+	 * @var ManagerRegistry
+	 */
+	static private $managerRegistry;
 
-	private string $class;
-	private int $amount = 1;
-	private Collection $has;
-	private Collection $for;
-	private Collection $set;
+	/**
+	 * @var Faker
+	 */
+	static private $faker;
+
+	/**
+	 * @var string
+	 */
+	private $class;
+
+	/**
+	 * @var int
+	 */
+	private $amount = 1;
+
+	/**
+	 * @var Collection
+	 */
+	private  $has;
+
+	/**
+	 * @var Collection
+	 */
+	private $for;
+
+	/**
+	 * @var Collection
+	 */
+	private $set;
 
 	protected function __construct()
 	{
@@ -137,7 +163,11 @@ abstract class AbstractFactory
 		return self::$managerRegistry;
 	}
 
-	protected function getMappingByClass(object $targetEntity, object $class = null)
+	/**
+	 * @param null|object $class
+	 * @param object $targetEntity
+	 */
+	protected function getMappingByClass($targetEntity, $class = null)
 	{
 		$class = $class !== null ? get_class($class) : $this->class;
 
@@ -164,7 +194,10 @@ abstract class AbstractFactory
 		return $mapping->first();
 	}
 
-	protected function getMappingByRelationship(string $relationship, object $entity)
+	/**
+	 * @param object $entity
+	 */
+	protected function getMappingByRelationship(string $relationship, $entity)
 	{
 		$associations = $this->getAssociations($this->class);
 
@@ -229,7 +262,10 @@ abstract class AbstractFactory
 		});
 	}
 
-	protected function processAssociations(object $instance): void
+	/**
+	 * @param object $instance
+	 */
+	protected function processAssociations($instance): void
 	{
 		if ($this->for->isEmpty() && $this->has->isEmpty()) {
 			return;
@@ -329,9 +365,10 @@ abstract class AbstractFactory
 	}
 
 	/**
+	 * @param object $instance
 	 * @return array<mixed>
 	 */
-	protected function getAssociation(object $instance, string $relationship): array
+	protected function getAssociation($instance, string $relationship): array
 	{
 		$metadata = $this->getClassMetadata(get_class($instance));
 
@@ -341,18 +378,20 @@ abstract class AbstractFactory
 	}
 
 	/**
+	 * @param object $targetEntity
 	 * @param mixed $value
 	 */
-	protected function setField(object $targetEntity, string $field, $value): void
+	protected function setField($targetEntity, string $field, $value): void
 	{
 		$this->setValue(new ReflectionClass($targetEntity), $targetEntity, $field, $value);
 	}
 
 	/**
+	 * @param object $instance
 	 * @param ReflectionClass<T> $reflection
 	 * @param mixed $value
 	 */
-	protected function setValue(ReflectionClass $reflection, object $instance, string $field, $value): void
+	protected function setValue(ReflectionClass $reflection, $instance, string $field, $value): void
 	{
 		if ($reflection->hasProperty($field)) {
 			$property = $reflection->getProperty($field);
@@ -363,7 +402,11 @@ abstract class AbstractFactory
 		}
 	}
 
-	protected function addToCollection(object $targetEntity, string $field, object $toAdd): void
+	/**
+	 * @param object $targetEntity
+	 * @param object $toAdd
+	 */
+	protected function addToCollection($targetEntity, string $field, $toAdd): void
 	{
 		$collection = $this->getValue(new ReflectionClass($targetEntity), $targetEntity, $field);
 
@@ -376,10 +419,11 @@ abstract class AbstractFactory
 	}
 
 	/**
+	 * @param object $instance
 	 * @param ReflectionClass<T> $reflection
 	 * @return mixed
 	 */
-	protected function getValue(ReflectionClass $reflection, object $instance, string $field)
+	protected function getValue(ReflectionClass $reflection, $instance, string $field)
 	{
 		if ($reflection->hasProperty($field)) {
 			$property = $reflection->getProperty($field);
@@ -391,7 +435,10 @@ abstract class AbstractFactory
 		return $this->getValue($parent, $instance, $field);
 	}
 
-	protected function setCollection(Collection $toSetCollection, object $targetEntity, string $field): void
+	/**
+	 * @param object $targetEntity
+	 */
+	protected function setCollection(Collection $toSetCollection, $targetEntity, string $field): void
 	{
 		$collection = new ArrayCollection($toSetCollection->toArray());
 
