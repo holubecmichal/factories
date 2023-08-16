@@ -4,7 +4,6 @@ namespace Michalholubec\Factories;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection as DoctrineCollection;
-use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -235,7 +234,6 @@ abstract class AbstractFactory
 
 		$definition = array_merge($definition, $set->all());
 
-		/** @var ClassMetadata $metadata */
 		$metadata = $this->getClassMetadata($this->class);
 
 		$toManyRelations = (new Collection($metadata->getAssociationMappings()))
@@ -331,7 +329,7 @@ abstract class AbstractFactory
 		return collect($metadata->associationMappings);
 	}
 
-	protected function getClassMetadata(string $class): \Doctrine\Persistence\Mapping\ClassMetadata
+	protected function getClassMetadata(string $class): ClassMetadataInfo
 	{
 		return $this->getManagerForClass($class)->getClassMetadata($class);
 	}
