@@ -3,7 +3,7 @@
 namespace Michalholubec\Tests;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Common\Persistence\ManagerRegistry;
 use Faker\Factory;
 use Michalholubec\Factories\AbstractFactory;
 use Michalholubec\Tester\TestCase;
