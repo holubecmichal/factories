@@ -20,7 +20,7 @@
     "minimum-stability": "stable",
     "require": {
         "php": "~7.1",
-        "doctrine/orm": "^2.7",
+        "doctrine/orm": "^2.6",
         "fzaninotto/faker": "^1.9",
         "illuminate/support": "^5.0"
     },
