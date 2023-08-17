@@ -368,6 +368,22 @@ class FactoryTest extends TestCase
 		Assert::type(Country::class, $dbUser->getContact()->getCountry());
 	}
 
+	public function testNotPersist(): void
+	{
+		$addresses = AddressFactory::new()
+			->for(UserFactory::new())
+			->count(5)
+			->notPersist()
+			->make();
+
+		Assert::count(5, $addresses);
+
+		Assert::noError(fn () => $this->entityManager->flush());
+
+		Assert::count(0, $this->entityManager->createQueryBuilder()->select('address')->from(Address::class, 'address')->getQuery()->execute());
+		Assert::count(0, $this->entityManager->createQueryBuilder()->select('user')->from(User::class, 'user')->getQuery()->execute());
+	}
+
 	protected function getMigrationPaths(): array
 	{
 		return [__DIR__ . '/migrations'];

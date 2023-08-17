@@ -51,6 +51,8 @@ abstract class AbstractFactory
 	 */
 	private $set;
 
+	private bool $persist = true;
+
 	protected function __construct()
 	{
 		if (self::$managerRegistry === null) {
@@ -256,7 +258,9 @@ abstract class AbstractFactory
 		$instances->each(function ($instance): void {
 			$this->processAssociations($instance);
 
-			$this->getManagerForClass($this->class)->persist($instance);
+			if ($this->persist) {
+				$this->getManagerForClass($this->class)->persist($instance);
+			}
 		});
 	}
 
@@ -346,7 +350,7 @@ abstract class AbstractFactory
 	protected function processFactory($factory): Collection
 	{
 		if ($factory instanceof AbstractFactory) {
-			$model = $factory->make();
+			$model = $factory->setPersist($this->persist)->make();
 		} else if ($factory instanceof Collection) {
 			$model = $factory;
 		} else {
@@ -486,5 +490,25 @@ abstract class AbstractFactory
 		} elseif ($parent = $reflection->getParentClass()) {
 			self::hydrateReflection($parent, $instance, $field, $value);
 		}
+	}
+
+	/**
+	 * @return static
+	 */
+	public function notPersist(): AbstractFactory
+	{
+		$this->persist = false;
+
+		return $this;
+	}
+
+	/**
+	 * @return static
+	 */
+	public function setPersist(bool $persist): AbstractFactory
+	{
+		$this->persist = $persist;
+
+		return $this;
 	}
 }
