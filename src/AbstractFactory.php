@@ -60,6 +60,9 @@ abstract class AbstractFactory
 	 */
 	abstract protected function model(): string;
 
+	/**
+	 * @return array<mixed>
+	 */
 	abstract protected function definition(): array;
 
 	/**
