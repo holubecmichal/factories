@@ -51,7 +51,10 @@ abstract class AbstractFactory
 	 */
 	private $set;
 
-	private bool $persist = true;
+	/**
+	 * @var bool
+	 */
+	private $persist = true;
 
 	protected function __construct()
 	{
