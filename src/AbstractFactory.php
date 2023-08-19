@@ -26,8 +26,6 @@ abstract class AbstractFactory
 	private Collection $for;
 	private Collection $set;
 
-	private bool $persist = true;
-
 	protected function __construct()
 	{
 		if (self::$managerRegistry === null) {
@@ -66,16 +64,16 @@ abstract class AbstractFactory
 	abstract protected function definition(): array;
 
 	/**
-	 * Create one model.
+	 * Make one model.
 	 *
 	 * @param array $attributes
 	 * @return T
 	 */
-	public function makeOne(array $attributes = [])
+	public function makeOne(array $attributes = [], bool $persist = false)
 	{
 		$this->amount = 1;
 
-		$instance = $this->make($attributes)->first();
+		$instance = $this->make($attributes, $persist)->first();
 
 		assert($instance instanceof $this->class);
 
@@ -83,28 +81,49 @@ abstract class AbstractFactory
 	}
 
 	/**
-	 * Create a collection of models.
+	 * Make a collection of models.
 	 *
 	 * @param array $attributes
 	 *
 	 * @return Collection<array-key, T>
 	 */
-	public function make(array $attributes = []): Collection
+	public function make(array $attributes = [], bool $persist = false): Collection
 	{
 		$results = [];
 
 		for ($i = 0; $i < $this->amount; $i++) {
-			$results[] = $this->makeInstance($attributes);
+			$results[] = $this->makeInstance($attributes, $persist);
 		}
 
 		$resultsCollection = new Collection($results);
 
-		$this->callAfterMaking($resultsCollection);
+		$this->callAfterMaking($resultsCollection, $persist);
 
 		return $resultsCollection;
 	}
 
+	/**
+	 * Make a collection of models.
+	 *
+	 * @param array $attributes
+	 *
+	 * @return Collection<array-key, T>
+	 */
+	public function create(array $attributes = []): Collection
+	{
+		return $this->make($attributes, true);
+	}
 
+	/**
+	 * Create one model.
+	 *
+	 * @param array $attributes
+	 * @return T
+	 */
+	public function createOne(array $attributes = [])
+	{
+		return $this->makeOne($attributes, true);
+	}
 
 	/**
 	 * @return static
@@ -193,13 +212,13 @@ abstract class AbstractFactory
 	 *
 	 * @return mixed
 	 */
-	protected function makeInstance(array $attributes = [])
+	protected function makeInstance(array $attributes, bool $persist)
 	{
 		$definition = $this->definition();
 
-		$set = $this->set->map(function ($value) {
+		$set = $this->set->map(function ($value) use ($persist) {
 			if ($value instanceof AbstractFactory) {
-				return $value->makeOne();
+				return $value->makeOne([], $persist);
 			}
 
 			return $value;
@@ -225,25 +244,25 @@ abstract class AbstractFactory
 		);
 	}
 
-	protected function callAfterMaking(Collection $instances): void
+	protected function callAfterMaking(Collection $instances, bool $persist): void
 	{
-		$instances->each(function ($instance): void {
-			$this->processAssociations($instance);
+		$instances->each(function ($instance) use ($persist): void {
+			$this->processAssociations($instance, $persist);
 
-			if ($this->persist) {
+			if ($persist) {
 				$this->getManagerForClass($this->class)->persist($instance);
 			}
 		});
 	}
 
-	protected function processAssociations(object $instance): void
+	protected function processAssociations(object $instance, bool $persist): void
 	{
 		if ($this->for->isEmpty() && $this->has->isEmpty()) {
 			return;
 		}
 
 		foreach ($this->for as [$factory, $relationship]) {
-			$entity = $this->processFactory($factory)->first();
+			$entity = $this->processFactory($factory, $persist)->first();
 
 			if ($relationship !== null) {
 				$mapping = $this->getMappingByRelationship($relationship, $entity);
@@ -263,7 +282,7 @@ abstract class AbstractFactory
 		}
 
 		foreach ($this->has as [$factory, $relationship]) {
-			$entities = $this->processFactory($factory);
+			$entities = $this->processFactory($factory, $persist);
 
 			if ($relationship !== null) {
 				$mapping = $this->getMappingByRelationship($relationship, $entities->first());
@@ -316,10 +335,10 @@ abstract class AbstractFactory
 	 * @param mixed $factory
 	 * @return Collection<int, object>
 	 */
-	protected function processFactory($factory): Collection
+	protected function processFactory($factory, bool $persist): Collection
 	{
 		if ($factory instanceof AbstractFactory) {
-			$model = $factory->setPersist($this->persist)->make();
+			$model = $factory->make([], $persist);
 		} else if ($factory instanceof Collection) {
 			$model = $factory;
 		} else {
@@ -448,25 +467,5 @@ abstract class AbstractFactory
 		} elseif ($parent = $reflection->getParentClass()) {
 			self::hydrateReflection($parent, $instance, $field, $value);
 		}
-	}
-
-	/**
-	 * @return static
-	 */
-	public function notPersist(): AbstractFactory
-	{
-		$this->persist = false;
-
-		return $this;
-	}
-
-	/**
-	 * @return static
-	 */
-	public function setPersist(bool $persist): AbstractFactory
-	{
-		$this->persist = $persist;
-
-		return $this;
 	}
 }
