@@ -39,7 +39,7 @@ class FactoryTest extends TestCase
 
 	public function testPersistUser(): void
 	{
-		$newUser = UserFactory::new()->makeOne();
+		$newUser = UserFactory::new()->createOne();
 
 		Assert::noError(function () { $this->entityManager->flush(); });
 
@@ -57,7 +57,7 @@ class FactoryTest extends TestCase
 
 	public function testPersistManyUser(): void
 	{
-		$newUser = UserFactory::new()->count(5)->make();
+		$newUser = UserFactory::new()->count(5)->create();
 
 		Assert::noError(function () { $this->entityManager->flush(); });
 
@@ -69,7 +69,7 @@ class FactoryTest extends TestCase
 
 	public function testOneToOneHasFactory(): void
 	{
-		$user = UserFactory::new()->has(ContactFactory::new())->makeOne();
+		$user = UserFactory::new()->has(ContactFactory::new())->createOne();
 
 		Assert::equal($user, $user->getContact()->getUser());
 
@@ -92,9 +92,9 @@ class FactoryTest extends TestCase
 
 	public function testOneToOneHasFactoryInstance(): void
 	{
-		$contact = ContactFactory::new()->makeOne();
+		$contact = ContactFactory::new()->createOne();
 
-		$user = UserFactory::new()->has($contact)->makeOne();
+		$user = UserFactory::new()->has($contact)->createOne();
 
 		Assert::equal($user, $user->getContact()->getUser());
 
@@ -117,7 +117,7 @@ class FactoryTest extends TestCase
 
 	public function testOneToOneHasEntityInstance(): void
 	{
-		ContactFactory::new()->makeOne();
+		ContactFactory::new()->createOne();
 
 		Assert::noError(function () { $this->entityManager->flush(); });
 
@@ -125,7 +125,7 @@ class FactoryTest extends TestCase
 
 		Assert::type(Contact::class, $dbContact);
 
-		$user = UserFactory::new()->has($dbContact)->makeOne();
+		$user = UserFactory::new()->has($dbContact)->createOne();
 
 		Assert::equal($user, $user->getContact()->getUser());
 
@@ -148,7 +148,7 @@ class FactoryTest extends TestCase
 
 	public function testOneToOneForFactory(): void
 	{
-		$contact = ContactFactory::new()->for(UserFactory::new())->makeOne();
+		$contact = ContactFactory::new()->for(UserFactory::new())->createOne();
 
 		Assert::equal($contact, $contact->getUser()->getContact());
 
@@ -168,9 +168,9 @@ class FactoryTest extends TestCase
 
 	public function testOneToOneForFactoryInstance(): void
 	{
-		$user = UserFactory::new()->makeOne();
+		$user = UserFactory::new()->createOne();
 
-		$contact = ContactFactory::new()->for($user)->makeOne();
+		$contact = ContactFactory::new()->for($user)->createOne();
 
 		Assert::equal($user, $contact->getUser());
 
@@ -190,13 +190,13 @@ class FactoryTest extends TestCase
 
 	public function testOneToOneForEntityInstance(): void
 	{
-		UserFactory::new()->makeOne();
+		UserFactory::new()->createOne();
 
 		Assert::noError(function () { $this->entityManager->flush(); });
 
 		$dbUser = $this->entityManager->createQueryBuilder()->select('user')->from(User::class, 'user')->getQuery()->getOneOrNullResult();
 
-		$contact = ContactFactory::new()->for($dbUser)->makeOne();
+		$contact = ContactFactory::new()->for($dbUser)->createOne();
 
 		Assert::equal($dbUser, $contact->getUser());
 
@@ -216,7 +216,7 @@ class FactoryTest extends TestCase
 
 	public function testOneToManyFactory(): void
 	{
-		$user = UserFactory::new()->has(AddressFactory::new()->count(5))->makeOne();
+		$user = UserFactory::new()->has(AddressFactory::new()->count(5))->createOne();
 
 		Assert::count(5, $user->getAddresses());
 
@@ -231,9 +231,9 @@ class FactoryTest extends TestCase
 
 	public function testOneToManyFactoryCollection(): void
 	{
-		$addresses = AddressFactory::new()->count(5)->make();
+		$addresses = AddressFactory::new()->count(5)->create();
 
-		$user = UserFactory::new()->has($addresses)->makeOne();
+		$user = UserFactory::new()->has($addresses)->createOne();
 
 		Assert::count(5, $user->getAddresses());
 
@@ -248,7 +248,7 @@ class FactoryTest extends TestCase
 
 	public function testOneToManyRelationship(): void
 	{
-		$user = UserFactory::new()->has(AddressFactory::new()->count(5), 'addresses')->makeOne();
+		$user = UserFactory::new()->has(AddressFactory::new()->count(5), 'addresses')->createOne();
 
 		Assert::count(5, $user->getAddresses());
 
@@ -266,7 +266,7 @@ class FactoryTest extends TestCase
 		$addresses = AddressFactory::new()
 			->for(UserFactory::new())
 			->count(5)
-			->make();
+			->create();
 
 		Assert::count(5, $addresses);
 
@@ -277,12 +277,12 @@ class FactoryTest extends TestCase
 
 	public function testManyToOneFactoryInstance(): void
 	{
-		$user = UserFactory::new()->makeOne();
+		$user = UserFactory::new()->createOne();
 
 		$addresses = AddressFactory::new()
 			->for($user)
 			->count(5)
-			->make();
+			->create();
 
 		Assert::count(5, $addresses);
 
@@ -299,7 +299,7 @@ class FactoryTest extends TestCase
 
 	public function testManyToOneEntityInstance(): void
 	{
-		$user = UserFactory::new()->makeOne();
+		$user = UserFactory::new()->createOne();
 
 		Assert::noError(function () { $this->entityManager->flush(); });
 
@@ -308,7 +308,7 @@ class FactoryTest extends TestCase
 		$addresses = AddressFactory::new()
 			->for($dbUser)
 			->count(5)
-			->make();
+			->create();
 
 		Assert::count(5, $addresses);
 
@@ -328,7 +328,7 @@ class FactoryTest extends TestCase
 		$addresses = AddressFactory::new()
 			->for(UserFactory::new(), 'user')
 			->count(5)
-			->make();
+			->create();
 
 		Assert::count(5, $addresses);
 
@@ -342,7 +342,7 @@ class FactoryTest extends TestCase
 		$user = UserFactory::new()
 			->firstName('tester')
 			->lastName('factory')
-			->makeOne();
+			->createOne();
 
 		Assert::noError(function () { $this->entityManager->flush(); });
 
@@ -357,7 +357,7 @@ class FactoryTest extends TestCase
 
 	public function testChain(): void
 	{
-		UserFactory::new()->withContact()->makeOne();
+		UserFactory::new()->withContact()->createOne();
 
 		Assert::noError(function () { $this->entityManager->flush(); });
 
@@ -368,20 +368,17 @@ class FactoryTest extends TestCase
 		Assert::type(Country::class, $dbUser->getContact()->getCountry());
 	}
 
-	public function testNotPersist(): void
+	public function testMake(): void
 	{
-		$addresses = AddressFactory::new()
-			->for(UserFactory::new())
-			->count(5)
-			->notPersist()
-			->make();
+		$user = UserFactory::new()->makeOne();
 
-		Assert::count(5, $addresses);
+		Assert::type(User::class, $user);
 
-		Assert::noError(fn () => $this->entityManager->flush());
+		Assert::noError(function () { $this->entityManager->flush(); });
 
-		Assert::count(0, $this->entityManager->createQueryBuilder()->select('address')->from(Address::class, 'address')->getQuery()->execute());
-		Assert::count(0, $this->entityManager->createQueryBuilder()->select('user')->from(User::class, 'user')->getQuery()->execute());
+		$results = $this->entityManager->createQueryBuilder()->select('user')->from(User::class, 'user')->getQuery()->execute();
+
+		Assert::count(0, $results);
 	}
 
 	protected function getMigrationPaths(): array
